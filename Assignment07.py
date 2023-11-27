@@ -25,16 +25,65 @@ students: list = []  # a table of student data
 menu_choice: str  # Hold the choice made by the user.
 
 
-# TODO Create a Person Class
 class Person():
-# TODO Add first_name and last_name properties to the constructor (Done)
-    def __int__(self, first_name, last_name):
-# TODO Create a getter and setter for the first_name property (Done)
-        self.first_name = first_name
-# TODO Create a getter and setter for the last_name property (Done)
-        self.first_last = first_last
-# TODO Override the __str__() method to return Person data (Done)
+    """
+    Class representing a person with first and last names.
+    Attributes:
+        first_name (str): The person's first name.
+        last_name (str): The person's last name.
+    """
 
+    def __init__(self, first_name: str, last_name: str):
+        """
+        Initializes a person object with the specified first and last names.
+        Args:
+            first_name (str): The person's first name.
+            last_name (str): The person's last name.
+        """
+        self._first_name = first_name
+        self._last_name = last_name
+
+    @property
+    def first_name(self) -> str:
+        """
+        Gets the person's first name.
+        Returns:
+            str: The person's first name.
+        """
+        return self._first_name
+
+    @first_name.setter
+    def first_name(self, first_name: str):
+        """
+        Sets the person's first name.
+        Args:
+            first_name (str): The person's first name.
+        """
+        self._first_name = first_name
+
+    @property
+    def last_name(self) -> str:
+        """
+        Gets the person's last name.
+        Returns:
+            str: The person's last name.
+        """
+        return self._last_name
+
+    @last_name.setter
+    def last_name(self, last_name: str):
+        """
+        Sets the person's last name.
+        Args:
+            last_name (str): The person's last name.
+        """
+        self._last_name = last_name
+
+# TODO Create a Person Class
+# TODO Add first_name and last_name properties to the constructor (Done)
+# TODO Create a getter and setter for the first_name property (Done)
+# TODO Create a getter and setter for the last_name property (Done)
+# TODO Override the __str__() method to return Person data (Done)
 # TODO Create a Student class the inherits from the Person class (Done)
 # TODO call to the Person constructor and pass it the first_name and last_name data (Done)
 # TODO add a assignment to the course_name property using the course_name parameter (Done)
