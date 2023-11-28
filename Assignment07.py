@@ -31,7 +31,11 @@ class Person():
     Attributes:
         first_name (str): The person's first name.
         last_name (str): The person's last name.
+    ChangeLog: (Who, When, What)
+    jmalick,11.26.2023,Created Class
     """
+    _first_name: str # holds Person object first name
+    _last_name: str # holds Person object first name
 
     def __init__(self, first_name: str, last_name: str):
         """
@@ -47,8 +51,7 @@ class Person():
     def first_name(self) -> str:
         """
         Gets the person's first name.
-        Returns:
-            str: The person's first name.
+        Returns: str: The person's first name.
         """
         return self._first_name
 
@@ -56,8 +59,7 @@ class Person():
     def first_name(self, first_name: str):
         """
         Sets the person's first name.
-        Args:
-            first_name (str): The person's first name.
+        Args: first_name (str): The person's first name.
         """
         self._first_name = first_name
 
@@ -65,8 +67,7 @@ class Person():
     def last_name(self) -> str:
         """
         Gets the person's last name.
-        Returns:
-            str: The person's last name.
+        Returns: str: The person's last name.
         """
         return self._last_name
 
@@ -74,25 +75,71 @@ class Person():
     def last_name(self, last_name: str):
         """
         Sets the person's last name.
-        Args:
-            last_name (str): The person's last name.
+        Args: last_name (str)
         """
         self._last_name = last_name
 
-# TODO Create a Person Class
-# TODO Add first_name and last_name properties to the constructor (Done)
-# TODO Create a getter and setter for the first_name property (Done)
-# TODO Create a getter and setter for the last_name property (Done)
-# TODO Override the __str__() method to return Person data (Done)
-# TODO Create a Student class the inherits from the Person class (Done)
-# TODO call to the Person constructor and pass it the first_name and last_name data (Done)
-# TODO add a assignment to the course_name property using the course_name parameter (Done)
-# TODO add the getter for course_name (Done)
-# TODO add the setter for course_name (Done)
-# TODO Override the __str__() method to return the Student data (Done)
+    def __str__(self):
+        """
+        Override __str__() method with first name, last name
+        :return: str
+        """
+        return f"{self._first_name},{self._last_name}"
 
+class Student(Person):
+    """
+    Class representing a student, inheriting from the Person class.
+    Attributes:
+        first_name (str): student's first name. (Inherited from Person)
+        last_name (str): student's last name. (Inherited from Person)
+        course_name (str): course student is registering for.
+    ChangeLog: (Who, When, What)
+    jmalick,11.26.2023,Created Class
+    """
+    _course_name: str  # holds Student object course name.
+    def __init__(self, first_name: str, last_name: str, course_name: str):
+        """
+        Initializes the Student object with first name, last name, and course name.
+        Args:
+            first_name (str): The student's first name.
+            last_name (str): The student's last name.
+            course_name (str): The course name.
+        """
+        super().__init__(first_name, last_name)
+        self._course_name = course_name
 
+    @property
+    def course_name(self) -> str:
+        """
+        Gets the person's first name.
+        Returns: str: The person's first name.
+        """
+        return self._course_name
 
+    @course_name.setter
+    def course_name(self, course_name: str):
+        """
+        Sets course name.
+        Args: course_name (str):
+        """
+        self._course_name = course_name
+
+    def __str__(self):
+        """
+        Override __str__() method with first name, last name, course
+        :return: str
+        """
+        return f"{self._first_name},{self._last_name},{self._course_name}"
+
+# TODO change option 1
+# TODO change opt 1 doc
+# TODO change option 2
+# TODO change opt 2 doc
+#TODO change option 3
+# TODO change opt 3 doc
+# TODO change option 4
+# TODO change opt 4 doc
+# TODO check all class documentation
 # Processing --------------------------------------- #
 class FileProcessor:
     """
@@ -100,23 +147,23 @@ class FileProcessor:
 
     ChangeLog: (Who, When, What)
     RRoot,1.1.2030,Created Class
+    jmalick, 11.28.2023, changed to process file as list of objects
     """
     @staticmethod
-    def read_data_from_file(file_name: str, student_data: list):
+    def read_data_from_file(file_name: str) -> list[Student]:
+    #def read_data_from_file(file_name: str, student_data: list):
         """ This function reads data from a json file and loads it into a list of dictionary rows
-
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
-
+        jmalick, 11.28.2023, reads data into Student object
         :param file_name: string data with name of file to read from
-        :param student_data: list of dictionary rows to be filled with file data
-
-        :return: list
+        :return: list of Student objects
         """
+        dict_table: list[dict[str, str, str]] = []
 
         try:
             file = open(file_name, "r")
-            student_data = json.load(file)
+            dict_table = json.load(file)
             file.close()
         except Exception as e:
             IO.output_error_messages(message="Error: There was a problem with reading the file.", error=e)
@@ -124,6 +171,10 @@ class FileProcessor:
         finally:
             if file.closed == False:
                 file.close()
+        student_data: list[Students] = []
+        for row in dict_table:
+            student_data.append(Student(row['FirstName'], row['LastName'],row['CourseName']))
+            print (student_data)
         return student_data
 
     @staticmethod
@@ -218,19 +269,16 @@ class IO:
     @staticmethod
     def output_student_and_course_names(student_data: list):
         """ This function displays the student and course names to the user
-
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
-
-        :param student_data: list of dictionary rows to be displayed
-
+        jmalick, 11.28.2023, changed to support Student object
+        :param student_data: list Student objects to be displayed
         :return: None
         """
-
         print("-" * 50)
         for student in student_data:
-            print(f'Student {student["FirstName"]} '
-                  f'{student["LastName"]} is enrolled in {student["CourseName"]}')
+            print(f'Student {student._first_name} '
+                  f'{student.last_name} is enrolled in {student._course_name}')
         print("-" * 50)
 
     @staticmethod
@@ -270,7 +318,7 @@ class IO:
 
 # When the program starts, read the file data into a list of lists (table)
 # Extract the data from the file
-students = FileProcessor.read_data_from_file(file_name=FILE_NAME, student_data=students)
+students: list[Student] = FileProcessor.read_data_from_file(file_name=FILE_NAME)
 
 # Present and Process the data
 while (True):
