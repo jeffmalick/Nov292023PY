@@ -34,8 +34,6 @@ class Person():
     ChangeLog: (Who, When, What)
     jmalick,11.26.2023,Created Class
     """
-    _first_name: str # holds Person object first name
-    _last_name: str # holds Person object first name
 
     def __init__(self, first_name: str, last_name: str):
         """
@@ -56,12 +54,15 @@ class Person():
         return self._first_name
 
     @first_name.setter
-    def first_name(self, first_name: str):
+    def first_name(self, value: str):
         """
         Sets the person's first name.
         Args: first_name (str): The person's first name.
         """
-        self._first_name = first_name
+        if value.isalpha():
+            self._first_name = value
+        else:
+            raise ValueError('first name can only contaion letters.')
 
     @property
     def last_name(self) -> str:
@@ -72,12 +73,15 @@ class Person():
         return self._last_name
 
     @last_name.setter
-    def last_name(self, last_name: str):
+    def last_name(self, value: str):
         """
         Sets the person's last name.
         Args: last_name (str)
         """
-        self._last_name = last_name
+        if value.isalpha():
+            self._last_name = value
+        else:
+            raise ValueError('last name can only contaion letters.')
 
     def __str__(self):
         """
@@ -117,12 +121,15 @@ class Student(Person):
         return self._course_name
 
     @course_name.setter
-    def course_name(self, course_name: str):
+    def course_name(self, value: str):
         """
         Sets course name.
         Args: course_name (str):
         """
-        self._course_name = course_name
+        if value:
+            self._course_name = value
+        else:
+            raise ValueError('Course can not be blank')
 
     def __str__(self):
         """
@@ -131,15 +138,6 @@ class Student(Person):
         """
         return f"{self._first_name},{self._last_name},{self._course_name}"
 
-# TODO change option 1
-# TODO change opt 1 doc
-# TODO change option 2
-# TODO change opt 2 doc
-#TODO change option 3
-# TODO change opt 3 doc
-# TODO change option 4
-# TODO change opt 4 doc
-# TODO check all class documentation
 # Processing --------------------------------------- #
 class FileProcessor:
     """
@@ -174,25 +172,28 @@ class FileProcessor:
         student_data: list[Students] = []
         for row in dict_table:
             student_data.append(Student(row['FirstName'], row['LastName'],row['CourseName']))
-            print (student_data)
         return student_data
 
     @staticmethod
     def write_data_to_file(file_name: str, student_data: list):
         """ This function writes data to a json file with data from a list of dictionary rows
-
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
-
+        jmalick, 11.28.2023, Change to use Student object
         :param file_name: string data with name of file to write to
-        :param student_data: list of dictionary rows to be writen to the file
-
+        :param student_data: list of objects to be writen to the file
         :return: None
         """
 
         try:
             file = open(file_name, "w")
-            json.dump(student_data, file)
+            dict_table: list[dict] = []
+            for row in student_data:  # list of Student objects to list of dictionaries
+                dict_table.append({'FirstName': row.first_name,
+                                   'LastName': row.last_name,
+                                   'CourseName': row.course_name})
+
+            json.dump(dict_table, file)
             file.close()
             IO.output_student_and_course_names(student_data=student_data)
         except Exception as e:
@@ -278,34 +279,25 @@ class IO:
         print("-" * 50)
         for student in student_data:
             print(f'Student {student._first_name} '
-                  f'{student.last_name} is enrolled in {student._course_name}')
+                  f'{student.last_name} is enrolled in {student.course_name}')
         print("-" * 50)
 
     @staticmethod
-    def input_student_data(student_data: list):
+    def input_student_data(student_data: list[Student]) -> list[Student]:
         """ This function gets the student's first name and last name, with a course name from the user
-
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
-
+        jmalick, 12.28.2023, Changed to use Student object
         :param student_data: list of dictionary rows to be filled with input data
-
         :return: list
         """
 
         try:
             student_first_name = input("Enter the student's first name: ")
-            if not student_first_name.isalpha():
-                raise ValueError("The last name should not contain numbers.")
             student_last_name = input("Enter the student's last name: ")
-            if not student_last_name.isalpha():
-                raise ValueError("The last name should not contain numbers.")
             course_name = input("Please enter the name of the course: ")
-            student = {"FirstName": student_first_name,
-                            "LastName": student_last_name,
-                            "CourseName": course_name}
+            student = Student(student_first_name, student_last_name, course_name)
             student_data.append(student)
-            print()
             print(f"You have registered {student_first_name} {student_last_name} for {course_name}.")
         except ValueError as e:
             IO.output_error_messages(message="One of the values was the correct type of data!", error=e)
@@ -316,7 +308,7 @@ class IO:
 
 # Start of main body
 
-# When the program starts, read the file data into a list of lists (table)
+# When the program starts, read the file data into a list of objects (table)
 # Extract the data from the file
 students: list[Student] = FileProcessor.read_data_from_file(file_name=FILE_NAME)
 
